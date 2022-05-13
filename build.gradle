@@ -23,6 +23,7 @@ apply plugin: "org.grails.grails-gsp"
 
 repositories {
     maven { url "https://repo.grails.org/grails/core" }
+    mavenCentral()
 }
 
 configurations {
@@ -74,6 +75,7 @@ dependencies {
     testRuntime "org.seleniumhq.selenium:selenium-firefox-driver:3.14.0"
 
     implementation group: 'com.opencsv', name: 'opencsv', version: '5.6'
+    runtime 'mysql:mysql-connector-java:8.0.29'
 }
 
 bootRun {
