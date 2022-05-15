@@ -64,4 +64,26 @@ class ReportServiceSpec extends Specification implements ServiceUnitTest<ReportS
         result['testA'] == 2
         result['testB'] == 3
     }
+
+    def "impressions per day test"() {
+        given:
+        Date dateFrom
+        Date dateTo
+
+        use(TimeCategory) {
+            dateFrom = new Date() - 1.day
+            dateTo = new Date() + 1.day
+        }
+        new Report(id: 1, daily: dateFrom, clicks: 2, datasource: "testA", campaign: 'astoalipies', impressions: 11).save(failOnError: true)
+        new Report(id: 3, daily: dateFrom, clicks: 2, datasource: "testA", campaign: 'alamakota', impressions: 32).save(failOnError: true)
+        new Report(id: 2, daily: dateTo, clicks: 3, datasource: "testB", campaign: 'alamakota', impressions: 1).save(failOnError: true)
+
+        when:
+        Map result = service.getImpressionsPerDay(dateFrom, dateTo)
+
+        then:
+        result.keySet().size() == 2
+        result[dateFrom] == 43
+        result[dateTo] == 1
+    }
 }
