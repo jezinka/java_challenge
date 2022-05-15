@@ -19,4 +19,14 @@ class ReportService {
             between("daily", dateFrom, dateTo)
         }.groupBy { it.daily }.collectEntries { [(it.key): it.value.impressions.sum()] }
     }
+
+    Map getCTR(List<String> datasource, List<String> campaign) {
+        return Report
+                .where {
+                    'in' 'datasource', datasource
+                    'in' 'campaign', campaign
+                }
+                .groupBy { [it.datasource, it.campaign] }
+                .collectEntries { [(it.key.join("-")): (it.value.clicks.sum() / it.value.impressions.sum())] }
+    }
 }

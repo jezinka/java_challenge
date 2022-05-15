@@ -86,4 +86,20 @@ class ReportServiceSpec extends Specification implements ServiceUnitTest<ReportS
         result[dateFrom] == 43
         result[dateTo] == 1
     }
+
+    def "ctr per datasource campaign"() {
+        given:
+        new Report(id: 1, daily: new Date(), clicks: 2, datasource: "testA", campaign: 'astoalipies', impressions: 10).save(failOnError: true)
+        new Report(id: 3, daily: new Date(), clicks: 2, datasource: "testA", campaign: 'alamakota', impressions: 32).save(failOnError: true)
+        new Report(id: 2, daily: new Date(), clicks: 3, datasource: "testB", campaign: 'alamakota', impressions: 12).save(failOnError: true)
+
+        when:
+        Map result = service.getCTR(["testA", "testB"], ['astoalipies', 'alamakota'])
+
+        then:
+        result.keySet().size() == 3
+        result["testA-astoalipies"] == 0.2
+        result["testA-alamakota"] == 0.0625
+        result["testB-alamakota"] == 0.25
+    }
 }

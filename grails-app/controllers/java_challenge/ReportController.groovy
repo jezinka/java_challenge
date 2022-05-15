@@ -49,6 +49,18 @@ class ReportController {
             log.error(e.message)
             return render(text: "{status: 'ERROR'}", contentType: "application/json", encoding: "UTF-8")
         }
+    }
 
+    def ctrPerDatasourceAndCampaign() {
+        List<String> datasources = params.datasource.split(',')
+        List<String> campaigns = params.campaign.split(',')
+
+        try {
+            Map crtPerDataSourceAndCampaign = reportService.getCTR(datasources, campaigns)
+            render(text: "{status: 'OK', impressions: ${crtPerDataSourceAndCampaign as JSON}", contentType: "application/json", encoding: "UTF-8")
+        } catch (RuntimeException e) {
+            log.error(e.message)
+            return render(text: "{status: 'ERROR'}", contentType: "application/json", encoding: "UTF-8")
+        }
     }
 }
